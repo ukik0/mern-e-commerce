@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import AuthRouter from './Routes/auth.js'
 import UserRouter from './Routes/user.js'
+import ProductRouter from './Routes/product.js'
 
 dotenv.config()
 const app = express()
@@ -27,3 +28,4 @@ app.listen(PORT, () => console.log(`Server start on Port ${PORT}`))
 //Routes
 app.use('/api/auth', AuthRouter)
 app.use('/api/user', UserRouter)
+app.use('/api/product', ProductRouter)

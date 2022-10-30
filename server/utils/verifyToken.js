@@ -4,11 +4,13 @@ export const verifyToken = (req, res, next) => {
     try {
         const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
 
-        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            if (err) res.status(403).json("Token is not valid!");
-            req.user = user;
-            next();
-        });
+        if (token) {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+            req.user = decoded
+
+            next()
+        }
     } catch (e) {
         console.log(e)
         res.status(404).json({message: 'Ошибка получния пользователя'})
@@ -30,7 +32,7 @@ export const verifyTokenAdmin = (req, res, next) => {
         if (req.user.isAdmin) {
             next()
         } else {
-            res.status(403).json('Error berify Admin')
+            res.status(403).json('Error verify Admin')
         }
     })
 }
