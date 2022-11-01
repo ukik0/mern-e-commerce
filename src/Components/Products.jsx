@@ -10,7 +10,8 @@ const Container = styled.div`
   flex-wrap: wrap;
 `;
 
-export const Products = () => {
+export const Products = ({category, filter}) => {
+    console.log(category, filter)
 
 
     return (

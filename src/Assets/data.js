@@ -27,16 +27,19 @@ export const categories = [
         id: 1,
         img: "https://content.asos-media.com/-/media/homepages/mw/2022/oct/24/moments/mw_global_winter_boots_moment_870x1110.jpg",
         title: "SHIRT STYLE!",
+        cat: 'women'
     },
     {
         id: 2,
         img: "https://images.asos-media.com/products/polo-ralph-lauren-icon-logo-long-sleeve-top-custom-fit-in-beige-marl/203492452-1-beigemarl?$n_640w$&wid=634&fit=constrain",
         title: "LOUNGEWEAR LOVE",
+        cat: 'coat'
     },
     {
         id: 3,
         img: "https://images.asos-media.com/products/asos-design-oversized-hoodie-in-grey-polar-fleece/202887695-1-greymarl?$n_640w$&wid=634&fit=constrain",
         title: "LIGHT JACKETS",
+        cat: 'jens'
     },
 ];
 
