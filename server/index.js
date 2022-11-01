@@ -5,6 +5,8 @@ import dotenv from 'dotenv'
 import AuthRouter from './Routes/auth.js'
 import UserRouter from './Routes/user.js'
 import ProductRouter from './Routes/product.js'
+import CartRouter from './Routes/cart.js'
+import OrderRouter from './Routes/order.js'
 
 dotenv.config()
 const app = express()
@@ -29,3 +31,5 @@ app.listen(PORT, () => console.log(`Server start on Port ${PORT}`))
 app.use('/api/auth', AuthRouter)
 app.use('/api/user', UserRouter)
 app.use('/api/product', ProductRouter)
+app.use('/api/cart', CartRouter)
+app.use('/api/order', OrderRouter)

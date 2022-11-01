@@ -1,6 +1,5 @@
 import {Router} from "express";
 import {verifyTokenAdmin, verifyTokenAuth} from "../utils/verifyToken.js";
-import {deleteUser, getAllUsers, getUser, getUserStats, updateUser} from "../Controllers/user.js";
 import {createProduct, deleteProduct, getAllProduct, getProduct, updateProduct} from "../Controllers/product.js";
 
 const router = Router()
@@ -25,9 +24,6 @@ router.get('/find/:id', getProduct)
 //http://localhost:8001/api/product/
 router.get('/', getAllProduct)
 
-//get user stats
-//http://localhost:8001/api/user/stats
-router.get('/stats', verifyTokenAdmin, getUserStats)
 
 
 export default router
