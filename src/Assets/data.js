@@ -27,7 +27,7 @@ export const categories = [
         id: 1,
         img: "https://content.asos-media.com/-/media/homepages/mw/2022/oct/24/moments/mw_global_winter_boots_moment_870x1110.jpg",
         title: "SHIRT STYLE!",
-        cat: 'women'
+        cat: 'woomen'
     },
     {
         id: 2,
