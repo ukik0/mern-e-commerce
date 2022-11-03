@@ -5,9 +5,10 @@ const ProductModel = new mongoose.Schema({
     desc: {type: String, required: true},
     img: {type: String, required: true},
     categories: Array,
-    size: String,
-    color: String,
-    price: {type: Number, required: true}
+    size: Array,
+    color: Array,
+    price: {type: Number, required: true},
+    inStock: {type: Boolean, default: true}
 }, {timestamps: true})
 
 export default mongoose.model('Product', ProductModel)
