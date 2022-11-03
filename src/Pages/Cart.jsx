@@ -3,6 +3,9 @@ import {Footer} from "../Components/Footer";
 import {Add, Remove} from "@mui/icons-material";
 import {Announcement} from "../Components/Announcement";
 import {Navbar} from "../Components/Navbar";
+import {useSelector} from "react-redux";
+import StripeCheckout from "react-stripe-checkout";
+import {useState} from "react";
 
 const Container = styled.div``;
 
@@ -147,11 +150,23 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+
 export const Cart = () => {
+    const KEY = process.env
+    console.log(KEY)
+    const {products} = useSelector((state) => state?.cart)
+    const {total} = useSelector((state) => state?.cart)
+
+    const [stripeToken, setStripeToken] = useState(null);
+    console.log(stripeToken)
+
+    const onToken = (token) => {
+        setStripeToken(token)
+    }
     return (
         <Container>
-            <Announcement />
-            <Navbar />
+            <Announcement/>
+            <Navbar/>
             <Wrapper>
                 <Title>YOUR BAG</Title>
                 <Top>
@@ -164,63 +179,41 @@ export const Cart = () => {
                 </Top>
                 <Bottom>
                     <Info>
-                        <Product>
-                            <ProductDetail>
-                                <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" />
-                                <Details>
-                                    <ProductName>
-                                        <b>Product:</b> JESSIE THUNDER SHOES
-                                    </ProductName>
-                                    <ProductId>
-                                        <b>ID:</b> 93813718293
-                                    </ProductId>
-                                    <ProductColor color="black" />
-                                    <ProductSize>
-                                        <b>Size:</b> 37.5
-                                    </ProductSize>
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
-                                    <Add sx={{cursor: 'pointer'}}/>
-                                    <ProductAmount>2</ProductAmount>
-                                    <Remove sx={{cursor: 'pointer'}}/>
-                                </ProductAmountContainer>
-                                <ProductPrice>$ 30</ProductPrice>
-                            </PriceDetail>
-                        </Product>
-                        <Hr />
-                        <Product>
-                            <ProductDetail>
-                                <Image src="https://i.pinimg.com/originals/2d/af/f8/2daff8e0823e51dd752704a47d5b795c.png" />
-                                <Details>
-                                    <ProductName>
-                                        <b>Product:</b> HAKURA T-SHIRT
-                                    </ProductName>
-                                    <ProductId>
-                                        <b>ID:</b> 93813718293
-                                    </ProductId>
-                                    <ProductColor color="gray" />
-                                    <ProductSize>
-                                        <b>Size:</b> M
-                                    </ProductSize>
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
-                                    <Add sx={{cursor: 'pointer'}}/>
-                                    <ProductAmount>1</ProductAmount>
-                                    <Remove sx={{cursor: 'pointer'}}/>
-                                </ProductAmountContainer>
-                                <ProductPrice>$ 20</ProductPrice>
-                            </PriceDetail>
-                        </Product>
+                        {products.map((product) => (
+                            <Product key={product._id}>
+                                <ProductDetail>
+                                    <Image
+                                        src={product.img}/>
+                                    <Details>
+                                        <ProductName>
+                                            <b>Product:</b> {product.title}
+                                        </ProductName>
+                                        <ProductId>
+                                            <b>ID:</b> {product._id.slice(1, 10)}
+                                        </ProductId>
+                                        <ProductColor color={product.color}/>
+                                        <ProductSize>
+                                            <b>Size:</b> {product.size}
+                                        </ProductSize>
+                                    </Details>
+                                </ProductDetail>
+                                <PriceDetail>
+                                    <ProductAmountContainer>
+                                        <Add sx={{cursor: 'pointer'}}/>
+                                        <ProductAmount>{product.quantity}</ProductAmount>
+                                        <Remove sx={{cursor: 'pointer'}}/>
+                                    </ProductAmountContainer>
+                                    <ProductPrice>$ {product.price * product.quantity}</ProductPrice>
+                                </PriceDetail>
+                            </Product>
+                        ))}
+                        <Hr/>
                     </Info>
                     <Summary>
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Subtotal</SummaryItemText>
-                            <SummaryItemPrice>$ 80</SummaryItemPrice>
+                            <SummaryItemPrice>$ {total}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -232,13 +225,24 @@ export const Cart = () => {
                         </SummaryItem>
                         <SummaryItem type="total">
                             <SummaryItemText>Total</SummaryItemText>
-                            <SummaryItemPrice>$ 80</SummaryItemPrice>
+                            <SummaryItemPrice>$ {total}</SummaryItemPrice>
                         </SummaryItem>
-                        <Button>CHECKOUT NOW</Button>
+                        <StripeCheckout
+                            name="Dmitriy Shop"
+                            image="https://avatars.githubusercontent.com/u/1486366?v=4"
+                            billingAddress
+                            shippingAddress
+                            description={`Your total is $${total}`}
+                            amount={total * 100}
+                            token={onToken}
+                            stripeKey={KEY}
+                        >
+                            <Button>CHECKOUT NOW</Button>
+                        </StripeCheckout>
                     </Summary>
                 </Bottom>
             </Wrapper>
-            <Footer />
+            <Footer/>
         </Container>
     )
 }

@@ -4,6 +4,11 @@ import {Announcement} from "../Components/Announcement";
 import {Add, Remove} from "@mui/icons-material";
 import {Newsletter} from "../Components/Newsletter";
 import {Footer} from "../Components/Footer";
+import {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import useFetching from "../Hooks/useFetching";
+import {useDispatch} from "react-redux";
+import {addProduct} from "../redux/cartSlice";
 
 const Container = styled.div``;
 
@@ -64,6 +69,7 @@ const FilterColor = styled.div`
   background-color: ${(props) => props.color};
   margin: 0px 5px;
   cursor: pointer;
+  border: 1px solid orange;
 `;
 
 const FilterSize = styled.select`
@@ -110,54 +116,78 @@ const Button = styled.button`
 `;
 
 export const SingleProductPage = () => {
-    return (
-        <Container>
-            <Announcement/>
-            <Navbar/>
-            <Wrapper>
-                <ImgContainer>
-                    <Image src="https://i.ibb.co/S6qMxwr/jean.jpg"/>
-                </ImgContainer>
-                <InfoContainer>
-                    <Title>Denim Jumpsuit</Title>
-                    <Desc>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-                        venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at
-                        iaculis arcu nisi sed mauris. Nulla fermentum vestibulum ex, eget
-                        tristique tortor pretium ut. Curabitur elit justo, consequat id
-                        condimentum ac, volutpat ornare.
-                    </Desc>
-                    <Price>$ 20</Price>
-                    <FilterContainer>
-                        <Filter>
-                            <FilterTitle>Color</FilterTitle>
-                            <FilterColor color="black"/>
-                            <FilterColor color="darkblue"/>
-                            <FilterColor color="gray"/>
-                        </Filter>
-                        <Filter>
-                            <FilterTitle>Size</FilterTitle>
-                            <FilterSize>
-                                <FilterSizeOption>XS</FilterSizeOption>
-                                <FilterSizeOption>S</FilterSizeOption>
-                                <FilterSizeOption>M</FilterSizeOption>
-                                <FilterSizeOption>L</FilterSizeOption>
-                                <FilterSizeOption>XL</FilterSizeOption>
-                            </FilterSize>
-                        </Filter>
-                    </FilterContainer>
-                    <AddContainer>
-                        <AmountContainer>
-                            <Remove sx={{cursor: 'pointer'}}/>
-                            <Amount>1</Amount>
-                            <Add sx={{cursor: 'pointer'}}/>
-                        </AmountContainer>
-                        <Button>ADD TO CART</Button>
-                    </AddContainer>
-                </InfoContainer>
-            </Wrapper>
-            <Newsletter/>
-            <Footer/>
-        </Container>
-    )
+    const dispatch = useDispatch()
+    const {id} = useParams()
+
+    const [quantity, setQuantity] = useState(1);
+    const [color, setColor] = useState('white');
+    const [size, setSize] = useState('XS');
+
+
+    useEffect(() => {
+        window.scroll(0, 0)
+    }, [])
+
+    const {data, loading} = useFetching(`/product/find/${id}`)
+
+    const quantityProduct = (value) => {
+        switch (value) {
+            case 'inc':
+                if (quantity < 5 && quantity >= 1) {
+                    setQuantity(prev => prev += 1)
+                }
+                break
+            case 'dec':
+                if (quantity <= 10 && quantity > 1) {
+                    setQuantity(prev => prev -= 1)
+                }
+                break
+        }
+    }
+
+
+    function addProductCart() {
+        dispatch(addProduct({...data, color, size, quantity}))
+    }
+
+    return (<Container>
+        <Announcement/>
+        <Navbar/>
+        <Wrapper>
+            <ImgContainer>
+                <Image src={data.img}/>
+            </ImgContainer>
+            <InfoContainer>
+                <Title>{data.title}</Title>
+                <Desc>
+                    {data.desc}
+                </Desc>
+                <Price>$ {data.price}</Price>
+                <FilterContainer>
+                    <Filter>
+                        <FilterTitle>Color</FilterTitle>
+                        {data.color?.map((color) => (
+                            <FilterColor onClick={() => setColor(color)} key={color} color={color}/>))}
+                    </Filter>
+                    <Filter>
+                        <FilterTitle>Size</FilterTitle>
+                        <FilterSize onChange={(e) => setSize(e.target.value)}>
+                            {data.size?.map((size) => (
+                                <FilterSizeOption key={size}>{size}</FilterSizeOption>))}
+                        </FilterSize>
+                    </Filter>
+                </FilterContainer>
+                <AddContainer>
+                    <AmountContainer>
+                        <Remove sx={{cursor: 'pointer'}} onClick={() => quantityProduct('dec')}/>
+                        <Amount>{quantity}</Amount>
+                        <Add sx={{cursor: 'pointer'}} onClick={() => quantityProduct('inc')}/>
+                    </AmountContainer>
+                    <Button onClick={addProductCart}>ADD TO CART</Button>
+                </AddContainer>
+            </InfoContainer>
+        </Wrapper>
+        <Newsletter/>
+        <Footer/>
+    </Container>)
 }

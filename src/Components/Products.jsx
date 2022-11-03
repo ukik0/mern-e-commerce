@@ -27,42 +27,23 @@ export const Products = ({category, filter, sort}) => {
         getProduct()
     }, [category])
 
-
     useEffect(() => {
-        category &&
-        setFilteredProducts(
-            products.filter((item) =>
-                Object.entries(filter).every(([key, value]) =>
-                    item[key].includes(value)
-                )
-            )
-        );
+        category && setFilteredProducts(products.filter((item) => Object.entries(filter).every(([key, value]) => item[key].includes(value))));
     }, [category, filter, products]);
 
     useEffect(() => {
-        if (sort === "newest") {
-            setFilteredProducts((prev) =>
-                [...prev].sort((a, b) => a.createdAt - b.createdAt)
-            );
-        } else if (sort === "asc") {
-            setFilteredProducts((prev) =>
-                [...prev].sort((a, b) => a.price - b.price)
-            );
+        if (sort === 'newest') {
+            setFilteredProducts(prev => [...prev], products.sort())
+        } else if (sort === 'asc') {
+            setFilteredProducts(prev => [...prev], products.sort((a, b) => a.price - b.price))
         } else {
-            setFilteredProducts((prev) =>
-                [...prev].sort((a, b) => b.price - a.price)
-            );
+            setFilteredProducts(prev => [...prev], products.sort((a, b) => b.price - a.price))
         }
-
-    }, [sort])
-
+    }, [sort]);
 
 
-    return (
-        <Container>
-            {category ? filteredProducts.map((item) => (
-                <Product item={item} key={item._id}/>)) : products.map((item) => (
-                <Product item={item} key={item._id}/>))}
-        </Container>
-    )
+    return (<Container>
+        {category ? filteredProducts.map((item) => (<Product item={item} key={item._id}/>)) : products.map((item) => (
+            <Product item={item} key={item._id}/>))}
+    </Container>)
 }

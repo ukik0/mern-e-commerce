@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import {FavoriteBorderOutlined, SearchOutlined, ShoppingCartOutlined} from "@mui/icons-material";
+import {Link} from "react-router-dom";
+import {useEffect} from "react";
 
 const Info = styled.div`
   opacity: 0;
@@ -65,6 +67,8 @@ const Icon = styled.div`
 
 export const Product = ({item}) => {
 
+
+
     return (
         <Container>
             <Circle/>
@@ -73,9 +77,12 @@ export const Product = ({item}) => {
                 <Icon>
                     <ShoppingCartOutlined/>
                 </Icon>
-                <Icon>
-                    <SearchOutlined/>
-                </Icon>
+                <Link to={`/product/${item._id}`}>
+                    <Icon>
+                        <SearchOutlined/>
+                    </Icon>
+                </Link>
+
                 <Icon>
                     <FavoriteBorderOutlined/>
                 </Icon>
