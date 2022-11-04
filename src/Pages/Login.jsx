@@ -1,4 +1,8 @@
 import styled from "styled-components";
+import {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {checkIsAuth, LOGIN} from "../redux/authSlice";
+import {Link, useNavigate} from "react-router-dom";
 
 const Container = styled.div`
   width: 100vw;
@@ -45,7 +49,7 @@ const Button = styled.button`
   margin-bottom: 10px;
 `;
 
-const Link = styled.a`
+const Linked = styled.div`
   margin: 5px 0px;
   font-size: 12px;
   text-decoration: underline;
@@ -53,16 +57,33 @@ const Link = styled.a`
 `;
 
 export const Login = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const isAuth = !!useSelector(checkIsAuth)
+
+    const [usernameValue, setUsernameValue] = useState('');
+    const [passwordValue, setPasswordValue] = useState('');
+
+    const handleLogin = (e) => {
+        e.preventDefault()
+        dispatch(LOGIN({username: usernameValue, password: passwordValue}))
+    }
+
+    useEffect(() => {
+        if (isAuth) navigate('/')
+    }, [isAuth]);
+
+
     return (
         <Container>
             <Wrapper>
                 <Title>SIGN IN</Title>
                 <Form>
-                    <Input placeholder="username"/>
-                    <Input placeholder="password"/>
-                    <Button>LOGIN</Button>
-                    <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-                    <Link>CREATE A NEW ACCOUNT</Link>
+                    <Input onChange={(e) => setUsernameValue(e.target.value)} placeholder="username"/>
+                    <Input type={'password'} onChange={(e) => setPasswordValue(e.target.value)} placeholder="password"/>
+                    <Button onClick={handleLogin}>LOGIN</Button>
+                    <Link><Linked>DO NOT YOU REMEMBER THE PASSWORD?</Linked></Link>
+                    <Link to={'/register'}><Linked>CREATE A NEW ACCOUNT</Linked></Link>
                 </Form>
             </Wrapper>
         </Container>

@@ -7,8 +7,9 @@ import {Footer} from "../Components/Footer";
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import useFetching from "../Hooks/useFetching";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {addProduct} from "../redux/cartSlice";
+import {checkIsAuth} from "../redux/authSlice";
 
 const Container = styled.div``;
 
@@ -109,6 +110,10 @@ const Button = styled.button`
   background-color: white;
   cursor: pointer;
   font-weight: 500;
+  
+  &:disabled{
+    background: #4cd964;
+  }
 
   &:hover {
     background-color: #f8f4f4;
@@ -118,6 +123,7 @@ const Button = styled.button`
 export const SingleProductPage = () => {
     const dispatch = useDispatch()
     const {id} = useParams()
+    const isAuth = !!useSelector(checkIsAuth)
 
     const [quantity, setQuantity] = useState(1);
     const [color, setColor] = useState('white');
@@ -183,7 +189,7 @@ export const SingleProductPage = () => {
                         <Amount>{quantity}</Amount>
                         <Add sx={{cursor: 'pointer'}} onClick={() => quantityProduct('inc')}/>
                     </AmountContainer>
-                    <Button onClick={addProductCart}>ADD TO CART</Button>
+                    <Button disabled={!isAuth} onClick={addProductCart}>ADD TO CART</Button>
                 </AddContainer>
             </InfoContainer>
         </Wrapper>

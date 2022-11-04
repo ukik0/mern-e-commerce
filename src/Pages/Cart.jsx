@@ -4,8 +4,8 @@ import {Add, Remove} from "@mui/icons-material";
 import {Announcement} from "../Components/Announcement";
 import {Navbar} from "../Components/Navbar";
 import {useSelector} from "react-redux";
-import StripeCheckout from "react-stripe-checkout";
-import {useState} from "react";
+import CheckoutForm from "react-stripe-checkout";
+import {useEffect, useState} from "react";
 
 const Container = styled.div``;
 
@@ -152,17 +152,13 @@ const Button = styled.button`
 
 
 export const Cart = () => {
-    const KEY = process.env
-    console.log(KEY)
     const {products} = useSelector((state) => state?.cart)
     const {total} = useSelector((state) => state?.cart)
 
-    const [stripeToken, setStripeToken] = useState(null);
-    console.log(stripeToken)
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(products))
+    }, [products])
 
-    const onToken = (token) => {
-        setStripeToken(token)
-    }
     return (
         <Container>
             <Announcement/>
@@ -227,18 +223,7 @@ export const Cart = () => {
                             <SummaryItemText>Total</SummaryItemText>
                             <SummaryItemPrice>$ {total}</SummaryItemPrice>
                         </SummaryItem>
-                        <StripeCheckout
-                            name="Dmitriy Shop"
-                            image="https://avatars.githubusercontent.com/u/1486366?v=4"
-                            billingAddress
-                            shippingAddress
-                            description={`Your total is $${total}`}
-                            amount={total * 100}
-                            token={onToken}
-                            stripeKey={KEY}
-                        >
-                            <Button>CHECKOUT NOW</Button>
-                        </StripeCheckout>
+                        <Button>CHECKOUT NOW</Button>
                     </Summary>
                 </Bottom>
             </Wrapper>

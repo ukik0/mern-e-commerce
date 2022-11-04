@@ -6,6 +6,7 @@ import {Cart} from "./Pages/Cart";
 import {SingleProductPage} from "./Pages/SingleProductPage";
 import {Route, Routes} from "react-router-dom";
 
+
 function App() {
     return (
         <Routes>

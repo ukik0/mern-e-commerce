@@ -4,7 +4,8 @@ import {Badge} from "@mui/material";
 import {ShoppingCartOutlined} from "@mui/icons-material";
 import {mobile} from "../utils/responsive";
 import {Link} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {checkIsAuth, logout} from "../redux/authSlice";
 
 const Container = styled.div`
   height: 60px;
@@ -70,7 +71,14 @@ const MenuItem = styled.div`
 
 
 export function Navbar() {
-    const {quantity}  = useSelector((state) => state?.cart)
+    const dispatch = useDispatch()
+    const quantity = useSelector((state) => state?.cart.products)
+    const isAuth = !!useSelector(checkIsAuth)
+
+    const handleLogout = () => {
+        dispatch(logout())
+        localStorage.removeItem('token')
+    }
 
     return (
         <Container>
@@ -88,11 +96,19 @@ export function Navbar() {
                     </Link>
                 </Center>
                 <Right>
-                    <MenuItem>REGISTER</MenuItem>
-                    <MenuItem>SIGN IN</MenuItem>
+                    {isAuth ? <MenuItem onClick={handleLogout}>Выйти</MenuItem>: (
+                        <>
+                            <Link style={{textDecoration: 'none', color: 'inherit'}} to={'/register'}>
+                                <MenuItem>REGISTER</MenuItem>
+                            </Link>
+                            <Link style={{textDecoration: 'none', color: 'inherit'}} to={'/login'}>
+                                <MenuItem>SIGN IN</MenuItem>
+                            </Link>
+                        </>
+                    )}
                     <Link to={'/cart'}>
                         <MenuItem>
-                            <Badge badgeContent={quantity} color="primary">
+                            <Badge badgeContent={quantity.length} color="primary">
                                 <ShoppingCartOutlined/>
                             </Badge>
                         </MenuItem>
